@@ -1,0 +1,20 @@
+{
+  "name": "week2",
+  "version": "1.0.0",
+  "description": "These are the topics for week 2:",
+  "main": "async-create-insert.js",
+  "scripts": {
+    "start": "nodemon exercise1.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "faker": "^6.6.6",
+    "mysql": "^2.18.1"
+  },
+  "devDependencies": {
+    "@faker-js/faker": "^7.6.0",
+    "nodemon": "^2.0.22"
+  }
+}
