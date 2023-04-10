@@ -15,12 +15,6 @@ db.connect((err) => {
   console.log("mysql connected...");
 });
 
-//create db
-
-db.query("CREATE DATABASE IF NOT EXISTS data", (err, result) => {
-  if (err) throw err;
-  console.log(result);
-});
 
 db.query("USE data", (err) => {
   if (err) throw err;

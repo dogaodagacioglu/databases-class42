@@ -15,13 +15,6 @@ db.connect((err) => {
   console.log("mysql connected...");
 });
 
-//create db
-
-db.query("CREATE DATABASE IF NOT EXISTS data", (err, result) => {
-  if (err) throw err;
-  console.log(result);
-});
-
 db.query("USE data", (err) => {
   if (err) throw err;
 });
@@ -29,7 +22,12 @@ db.query("USE data", (err) => {
 //create research_Paper
 
 db.query(
-  "CREATE TABLE research_paper (paper_id INT NOT NULL AUTO_INCREMENT, paper_title VARCHAR(255), conference VARCHAR(255), publish_date DATETIME, PRIMARY KEY (paper_id))",
+  `CREATE TABLE research_paper (
+  paper_id INT NOT NULL AUTO_INCREMENT,
+  paper_title VARCHAR(255),
+  conference VARCHAR(255),
+  publish_date DATETIME,
+  PRIMARY KEY (paper_id))`,
   (err) => {
     if (err) throw err;
     console.log("research_paper table created");
@@ -39,7 +37,11 @@ db.query(
 //create research_papers_authors
 
 db.query(
-  "CREATE TABLE research_papers_authors (id INT NOT NULL AUTO_INCREMENT, author_id INT, research_paper_id INT, PRIMARY KEY (id))",
+  `CREATE TABLE research_papers_authors (
+  id INT NOT NULL AUTO_INCREMENT,
+  author_id INT,
+  research_paper_id INT,
+  PRIMARY KEY (id))`,
   (err) => {
     if (err) throw err;
     console.log("research_paper table created");
@@ -47,7 +49,7 @@ db.query(
 );
 
 db.query(
-  "ALTER TABLE research_papers_authors ADD FOREIGN KEY (author_id) REFERENCES authors(author_id)",
+  `ALTER TABLE research_papers_authors ADD FOREIGN KEY (author_id) REFERENCES authors (author_id)`,
   (err) => {
     if (err) throw err;
     console.log("foreign key for authors added");
@@ -66,16 +68,14 @@ db.query(
 
 const authors = [
   {
-    author_id: 1,
     author_name: "John Doe",
     university: "University of Amsterdam",
     date_of_birth: "1980-01-01",
     h_index: 10,
     gender: "Male",
-    mentor_id: 5,
+    mentor_id: null,
   },
   {
-    author_id: 2,
     author_name: "Jane Smith",
     university: "University of Copenhagen",
     date_of_birth: "1985-02-14",
@@ -97,7 +97,7 @@ const authors = [
     date_of_birth: "1990-06-23",
     h_index: 7,
     gender: "Female",
-    mentor_id: 1,
+    mentor_id: 3,
   },
   {
     author_name: "Peter Brown",
@@ -105,7 +105,7 @@ const authors = [
     date_of_birth: "1982-08-11",
     h_index: 9,
     gender: "Male",
-    mentor_id: 7,
+    mentor_id: 1,
   },
   {
     author_name: "Karen Davis",
@@ -153,7 +153,7 @@ const authors = [
     date_of_birth: "1981-05-12",
     h_index: 13,
     gender: "Male",
-    mentor_id: 8,
+    mentor_id: 7,
   },
   {
     author_name: "Kim Benjamin",
@@ -169,7 +169,7 @@ const authors = [
     date_of_birth: "1989-02-28",
     h_index: 7,
     gender: "Female",
-    mentor_id: 1,
+    mentor_id: 8,
   },
   {
     author_name: "Lady Capulet",
@@ -177,7 +177,7 @@ const authors = [
     date_of_birth: "1989-02-28",
     h_index: 7,
     gender: "Female",
-    mentor_id: 7,
+    mentor_id: 9,
   },
   {
     author_name: "Eve Adams",
@@ -185,7 +185,7 @@ const authors = [
     date_of_birth: "1989-02-28",
     h_index: 7,
     gender: "Female",
-    mentor_id: 6,
+    mentor_id: 8,
   },
 ];
 
@@ -194,6 +194,13 @@ authors.forEach((author) => {
     if (err) throw err;
     console.log("authors data inserted");
   });
+});
+
+db.query("UPDATE authors SET mentor_id = 2 WHERE author_id = 1", (err) => {
+  if (err) {
+    throw err;
+  }
+  console.log("Author data updated");
 });
 
 // İnsert researchPapers
