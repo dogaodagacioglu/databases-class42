@@ -23,7 +23,7 @@ async function main() {
         account_changes: [
           {
             change_number: 1,
-            amount: 100,
+            amount: 1000,
             changed_date: new Date(),
             remark: "Initial deposit",
           },
@@ -35,7 +35,7 @@ async function main() {
         account_changes: [
           {
             change_number: 1,
-            amount: 200,
+            amount: 500,
             changed_date: new Date(),
             remark: "Initial deposit",
           },
@@ -59,3 +59,4 @@ async function main() {
 }
 
 main().catch(console.error);
+

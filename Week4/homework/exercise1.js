@@ -1,60 +1,48 @@
 const { MongoClient } = require("mongodb");
 
-async function main() {
-  const uri =
-    "mongodb+srv://dogafb:Hyf0731@cluster0.ysqw2rl.mongodb.net/?retryWrites=true&w=majority";
+const uri =
+  "mongodb+srv://dogafb:Hyf0731@cluster0.ysqw2rl.mongodb.net/?retryWrites=true&w=majority";
 
-  const client = new MongoClient(uri);
+const client = new MongoClient(uri);
 
-  try {
-    await client.connect();
-
-    // const result = await getTotalPopulationByYear(
-    //   client,
-    //   "Germany",
-    //   1950,
-    //   2000
-    // );
-    // console.log(result);
-
-    const result1 = await getContinentDataByYearAndAge(client, 1950, 40);
-
-    console.log(result1);
-  } catch (e) {
-    console.error(e);
-  } finally {
-    await client.close();
-  }
-}
-
-main().catch(console.error);
-
-async function getTotalPopulationByYear(client, country, startYear, endYear) {
+async function getPopulationForCountryPerYear(client, country) {
   const pipeline = [
     {
       $match: {
         Country: country,
-        Year: { $gte: startYear, $lte: endYear },
+      },
+    },
+    {
+      $addFields: {
+        M_int: { $toInt: "$M" },
+        F_int: { $toInt: "$F" },
       },
     },
     {
       $group: {
         _id: "$Year",
-        totalPopulation: { $sum: { $add: ["$M", "$F"] } },
+        countPopulation: {
+          $sum: {
+            $add: ["$M_int", "$F_int"],
+          },
+        },
       },
     },
     {
-      $sort: { _id: 1 },
+      $sort: {
+        _id: 1,
+      },
     },
   ];
 
-  const result = await client
+  const aggCursor = await client
     .db("databaseWeek4")
     .collection("population")
-    .aggregate(pipeline)
-    .toArray();
+    .aggregate(pipeline);
 
-  return result;
+  const results = await aggCursor.toArray();
+
+  return results;
 }
 
 async function getContinentDataByYearAndAge(client, year, age) {
@@ -67,7 +55,9 @@ async function getContinentDataByYearAndAge(client, year, age) {
     },
     {
       $addFields: {
-        TotalPopulation: { $add: ["$M", "$F"] },
+        M_int: { $toInt: "$M" },
+        F_int: { $toInt: "$F" },
+        TotalPopulation: { $add: ["$M_int", "$F_int"] },
       },
     },
     {
@@ -87,3 +77,21 @@ async function getContinentDataByYearAndAge(client, year, age) {
 
   return results;
 }
+
+async function main() {
+  try {
+    await client.connect();
+
+    const results = await getPopulationForCountryPerYear(client, "Netherlands");
+    console.log(results);
+
+    const results1 = await getContinentDataByYearAndAge(client, 2020, "100+");
+    console.log(results1);
+  } catch (e) {
+    console.error(e);
+  } finally {
+    await client.close();
+  }
+}
+
+main().catch(console.error);
